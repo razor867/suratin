@@ -2,7 +2,7 @@ using System;
 
 namespace SURAT_API.Models
 {
-    public class surat_masuk
+    public class surat_keluar
     {
         public int Id { get; set; }
         public string? Title { get; set; }

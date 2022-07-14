@@ -33,13 +33,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './core/home/home.component';
 import { SuratmasukComponent } from './core/suratmasuk/suratmasuk.component';
+import { SuratkeluarComponent } from './core/suratkeluar/suratkeluar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LayoutComponent,
     HomeComponent,
-    SuratmasukComponent
+    SuratmasukComponent,
+    SuratkeluarComponent
   ],
   imports: [
     BrowserModule,

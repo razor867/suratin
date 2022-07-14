@@ -2,9 +2,9 @@ using System;
 
 namespace SURAT_API.ViewModels
 {
-    public class SuratMasukDto
+    public class SuratKeluarDto
     {
-        public int IdSuratMasuk { get; set; }
+        public int IdSuratKeluar { get; set; }
         public string? Title { get; set; }
         public string? NoLetter { get; set; }
         public string? Regarding { get; set; }

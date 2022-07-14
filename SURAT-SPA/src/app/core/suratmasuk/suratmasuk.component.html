@@ -14,7 +14,7 @@
           </button>
         </div>
         <div class="col-md-3 col-12">
-          <p-calendar [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [(ngModel)]="selectedDate" dateFormat="dd MM yy" [readonlyInput]="true" inputId="datepicker" [showIcon]="true" placeholder="Date Filter" (onSelect)="loadData()"></p-calendar>
+          <p-calendar [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [(ngModel)]="selectedDate" view="month" dateFormat="MM yy" [readonlyInput]="true" inputId="datepicker" [showIcon]="true" placeholder="Month Filter" (onSelect)="loadData()"></p-calendar>
         </div>
       </div>
     </ng-template>
@@ -39,7 +39,12 @@
           </button>
         </td>
         <td>
-          {{rowData.title}}
+          <div>{{
+            rowData.title.length > 50
+            ? rowData.title.substring(0, 50) + "..."
+            : rowData.title
+          }}</div>
+          <div class="text-muted">{{rowData.noLetter}}</div>
         </td>
         <td>
           {{rowData.regarding}}
@@ -51,7 +56,7 @@
           {{rowData.fromPerson}}
         </td>
         <td>
-          {{rowData.message}}
+          {{rowData.message.length > 50 ? rowData.message.substring(0, 50) + "..." : rowData.message}}
         </td>
         <td>
           {{rowData.created | date:'dd/MM/yyyy'}}
@@ -84,6 +89,14 @@
         [ngClass]="{'is-invalid': formSuratMasuk.get('title')?.errors && formSuratMasuk.get('title')?.touched}">
         <div class="invalid-feedback">
           Harap isi Title
+        </div>
+      </div>
+      <div class="mb-2">
+        <label for="noLetter" class="form-label">No Letter<span class="required">*</span></label>
+        <input type="text" class="form-control" id="noLetter" formControlName="noLetter"
+        [ngClass]="{'is-invalid': formSuratMasuk.get('noLetter')?.errors && formSuratMasuk.get('noLetter')?.touched}">
+        <div class="invalid-feedback">
+          Harap isi No Letter
         </div>
       </div>
       <div class="mb-2">
@@ -143,6 +156,13 @@
         <b>Title</b>
         <br>
         {{detailSuratMasuk.title}}
+      </p>
+    </div>
+    <div class="mb-2">
+      <p>
+        <b>No Letter</b>
+        <br>
+        {{detailSuratMasuk.noLetter}}
       </p>
     </div>
     <div class="mb-2">

@@ -15,26 +15,26 @@ namespace SURAT_API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 
-public class SuratMasukController : ControllerBase
+public class SuratKeluarController : ControllerBase
 {
     private readonly IDataRepository _repo;
     // private readonly IMapper _mapper;
 
-    public SuratMasukController(IDataRepository repo)
+    public SuratKeluarController(IDataRepository repo)
     {
         _repo = repo;
     }
 
-    #region Surat Masuk
+    #region Surat Keluar
     [HttpGet]
-    public async Task<IActionResult> GetListSuratMasuk([FromQuery] Params prm)
+    public async Task<IActionResult> GetListSuratKeluar([FromQuery] Params prm)
     {
-        var data = await _repo.GetListSuratMasuk(prm);
+        var data = await _repo.GetListSuratKeluar(prm);
         Response.AddPagination(data.CurrentPage, data.PageSize, data.TotalCount, data.TotalPages);
 
-        var res = data.Select(x => new SuratMasukDto()
+        var res = data.Select(x => new SuratKeluarDto()
         {
-            IdSuratMasuk = x.Id,
+            IdSuratKeluar = x.Id,
             Title = x.Title,
             NoLetter = x.No_letter,
             Regarding = x.Regarding,
@@ -48,15 +48,15 @@ public class SuratMasukController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetSuratMasuk(int id)
+    public async Task<IActionResult> GetSuratKeluar(int id)
     {
-        var data = await _repo.GetSuratMasuk(id);
+        var data = await _repo.GetSuratKeluar(id);
         if (data == null)
             return BadRequest("Surat tidak ditemukan!");
 
-        var res = new SuratMasukDto()
+        var res = new SuratKeluarDto()
         {
-            IdSuratMasuk = data.Id,
+            IdSuratKeluar = data.Id,
             Title = data.Title,
             NoLetter = data.No_letter,
             Regarding = data.Regarding,
@@ -70,9 +70,9 @@ public class SuratMasukController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddSuratMasuk(SuratMasukDto data)
+    public async Task<IActionResult> AddSuratKeluar(SuratKeluarDto data)
     {
-        var suratMasuk = new surat_masuk()
+        var suratKeluar = new surat_keluar()
         {
             Title = data.Title,
             No_letter = data.NoLetter,
@@ -85,48 +85,48 @@ public class SuratMasukController : ControllerBase
             Updated_at = HelperMethod.DateToNumeric(DateTime.Now),
             Updated_time = HelperMethod.TimeToNumeric(DateTime.Now)
         };
-        _repo.Add<surat_masuk>(suratMasuk);
+        _repo.Add<surat_keluar>(suratKeluar);
 
         if (await _repo.SaveAll())
             return Ok();
 
-        throw new Exception("Failed to add surat masuk!");
+        throw new Exception("Failed to add surat keluar!");
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> EditSuratMasuk(SuratMasukDto data, int id)
+    public async Task<IActionResult> EditSuratKeluar(SuratKeluarDto data, int id)
     {
-        var suratMasuk = await _repo.GetSuratMasuk(id);
-        if (suratMasuk == null)
-            return BadRequest("Surat masuk not found!");
+        var suratKeluar = await _repo.GetSuratKeluar(id);
+        if (suratKeluar == null)
+            return BadRequest("Surat keluar not found!");
 
-        suratMasuk.Title = data.Title;
-        suratMasuk.No_letter = data.NoLetter;
-        suratMasuk.Regarding = data.Regarding;
-        suratMasuk.To_person = data.ToPerson;
-        suratMasuk.From_person = data.FromPerson;
-        suratMasuk.Message = data.Message;
-        suratMasuk.Updated_at = HelperMethod.DateToNumeric(DateTime.Now);
-        suratMasuk.Updated_time = HelperMethod.TimeToNumeric(DateTime.Now);
+        suratKeluar.Title = data.Title;
+        suratKeluar.No_letter = data.NoLetter;
+        suratKeluar.Regarding = data.Regarding;
+        suratKeluar.To_person = data.ToPerson;
+        suratKeluar.From_person = data.FromPerson;
+        suratKeluar.Message = data.Message;
+        suratKeluar.Updated_at = HelperMethod.DateToNumeric(DateTime.Now);
+        suratKeluar.Updated_time = HelperMethod.TimeToNumeric(DateTime.Now);
 
         if (await _repo.SaveAll())
             return Ok();
 
-        throw new Exception("Failed to edit surat masuk!");
+        throw new Exception("Failed to edit surat keluar!");
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteSuratMasuk([FromQuery] Params prm, int id)
+    public async Task<IActionResult> DeleteSuratKeluar([FromQuery] Params prm, int id)
     {
-        var suratMasuk = await _repo.GetSuratMasuk(id);
-        if (suratMasuk == null)
-            return BadRequest("Surat masuk not found!");
+        var suratKeluar = await _repo.GetSuratKeluar(id);
+        if (suratKeluar == null)
+            return BadRequest("Surat keluar not found!");
 
-        _repo.Delete<surat_masuk>(suratMasuk);
+        _repo.Delete<surat_keluar>(suratKeluar);
         if (await _repo.SaveAll())
             return Ok();
 
-        throw new Exception("Failed to delete surat masuk!");
+        throw new Exception("Failed to delete surat keluar!");
     }
     #endregion
 }

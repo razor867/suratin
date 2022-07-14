@@ -13,9 +13,18 @@ namespace SURAT_API.Data
         void Add<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
         Task<bool> SaveAll();
+
+        #region surat_masuk
+
         Task<PagedList<surat_masuk>> GetListSuratMasuk(Params prm);
         Task<surat_masuk> GetSuratMasuk(int Id);
-        #region surat_masuk
+
+        #endregion
+
+        #region surat_keluar
+
+        Task<PagedList<surat_keluar>> GetListSuratKeluar(Params prm);
+        Task<surat_keluar> GetSuratKeluar(int Id);
 
         #endregion
     }

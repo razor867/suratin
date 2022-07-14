@@ -37,13 +37,28 @@ namespace SURAT_API.Data
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(prm.dtft))
-                query = query.Where(x => x.Created_at == Convert.ToDecimal(prm.dtft));
+                query = query.Where(x => x.Created_at.ToString().Substring(0, 6) == prm.dtft.Substring(0, 6));
 
             return await PagedList<surat_masuk>.CreateAsync(query, prm.PageNumber, prm.PageSize);
         }
         public async Task<surat_masuk> GetSuratMasuk(int Id)
         {
             return await context.surat_masuk.FirstOrDefaultAsync(x => x.Id == Id);
+        }
+        public async Task<PagedList<surat_keluar>> GetListSuratKeluar(Params prm)
+        {
+            var query = context.surat_keluar
+                .OrderByDescending(x => x.Created_at).ThenByDescending(x => x.Created_time)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(prm.dtft))
+                query = query.Where(x => x.Created_at.ToString().Substring(0, 6) == prm.dtft.Substring(0, 6));
+
+            return await PagedList<surat_keluar>.CreateAsync(query, prm.PageNumber, prm.PageSize);
+        }
+        public async Task<surat_keluar> GetSuratKeluar(int Id)
+        {
+            return await context.surat_keluar.FirstOrDefaultAsync(x => x.Id == Id);
         }
     }
 }

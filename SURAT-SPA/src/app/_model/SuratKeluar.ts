@@ -1,5 +1,5 @@
-export interface SuratMasuk {
-    idSuratMasuk: number;
+export interface SuratKeluar {
+    idSuratKeluar: number;
     title: string;
     noLetter: string;
     regarding: string;

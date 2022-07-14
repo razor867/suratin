@@ -1,0 +1,338 @@
+<div class="mx-3 my-3">
+  <p-confirmDialog [baseZIndex]="10000"></p-confirmDialog>
+  <h5>Surat Keluar</h5>
+  <hr />
+  <p-table
+    #dt
+    [value]="listSuratKeluar"
+    [paginator]="true"
+    [rows]="10"
+    [responsive]="true"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    styleClass="p-datatable-striped"
+    (onLazyLoad)="pageChanged($event)"
+    [loading]="loading"
+    [lazy]="true"
+    [totalRecords]="pagination.totalItems"
+    [resizableColumns]="true"
+    columnResizeMode="expand"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+  >
+    <ng-template pTemplate="caption">
+      <div class="row justify-content-between">
+        <div class="col-md-9 col-12 mb-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary mb-2"
+            (click)="showForm(popup, null)"
+          >
+            <i class="fa fa-plus"></i> Add
+          </button>
+        </div>
+        <div class="col-md-3 col-12">
+          <p-calendar
+            [style]="{ width: '100%' }"
+            [inputStyle]="{ width: '100%' }"
+            [(ngModel)]="selectedDate"
+            view="month"
+            dateFormat="MM yy"
+            [readonlyInput]="true"
+            inputId="datepicker"
+            [showIcon]="true"
+            placeholder="Month Filter"
+            (onSelect)="loadData()"
+          ></p-calendar>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr style="font-size: small">
+        <th style="width: 4.4em">Edit</th>
+        <th style="width: 25em">Title</th>
+        <th style="width: 16em">Regarding</th>
+        <th style="width: 10em">To Person</th>
+        <th style="width: 10em">From Person</th>
+        <th>Message</th>
+        <th style="width: 10em">Created</th>
+        <th style="width: 4.4em"></th>
+        <th style="width: 4.4em">Del</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+      <tr style="font-size: small">
+        <td>
+          <button
+            class="btn btn-sm btn-outline-primary"
+            type="button"
+            (click)="showForm(popup, rowData)"
+          >
+            <i class="fas fa-pencil-alt"></i>
+          </button>
+        </td>
+        <td style="word-wrap: break-word;">
+          <div>{{ 
+            rowData.title.length > 50
+            ? rowData.title.substring(0, 50) + "..."
+            : rowData.title
+             }}</div>
+          <div class="text-muted">{{ rowData.noLetter }}</div>
+        </td>
+        <td style="word-wrap: break-word;">
+          {{ rowData.regarding }}
+        </td>
+        <td style="word-wrap: break-word;">
+          {{ rowData.toPerson }}
+        </td>
+        <td style="word-wrap: break-word;">
+          {{ rowData.fromPerson }}
+        </td>
+        <td>
+          {{
+            rowData.message.length > 50
+              ? rowData.message.substring(0, 50) + "..."
+              : rowData.message
+          }}
+        </td>
+        <td>
+          {{ rowData.created | date: "dd/MM/yyyy" }}
+        </td>
+        <td>
+          <button
+            class="btn btn-sm btn-primary"
+            type="button"
+            (click)="detail(popupDetail, rowData)"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </td>
+        <td>
+          <button
+            class="btn btn-sm btn-outline-danger"
+            type="button"
+            (click)="del(rowData)"
+          >
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<ng-template #popup>
+  <div class="modal-header">
+    <h1 class="h4 font-weight-normal">{{ title }}</h1>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modalRef.hide()"
+    ></button>
+  </div>
+  <div class="modal-body" style="font-size: small">
+    <form [formGroup]="formSuratKeluar">
+      <div class="mb-2">
+        <label for="title" class="form-label"
+          >Title<span class="required">*</span></label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          formControlName="title"
+          [ngClass]="{
+            'is-invalid':
+              formSuratKeluar.get('title')?.errors &&
+              formSuratKeluar.get('title')?.touched
+          }"
+        />
+        <div class="invalid-feedback">Harap isi Title</div>
+      </div>
+      <div class="mb-2">
+        <label for="noLetter" class="form-label"
+          >No Letter<span class="required">*</span></label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="noLetter"
+          formControlName="noLetter"
+          [ngClass]="{
+            'is-invalid':
+              formSuratKeluar.get('noLetter')?.errors &&
+              formSuratKeluar.get('noLetter')?.touched
+          }"
+        />
+        <div class="invalid-feedback">Harap isi No Letter</div>
+      </div>
+      <div class="mb-2">
+        <label for="regarding" class="form-label"
+          >Regarding<span class="required">*</span></label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="regarding"
+          formControlName="regarding"
+          [ngClass]="{
+            'is-invalid':
+              formSuratKeluar.get('regarding')?.errors &&
+              formSuratKeluar.get('regarding')?.touched
+          }"
+        />
+        <div class="invalid-feedback">Harap isi Regarding</div>
+      </div>
+      <div class="mb-2">
+        <label for="toPerson" class="form-label"
+          >To<span class="required">*</span></label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="toPerson"
+          formControlName="toPerson"
+          [ngClass]="{
+            'is-invalid':
+              formSuratKeluar.get('toPerson')?.errors &&
+              formSuratKeluar.get('toPerson')?.touched
+          }"
+        />
+        <div class="invalid-feedback">Harap isi To</div>
+      </div>
+      <div class="mb-2">
+        <label for="fromPerson" class="form-label"
+          >From<span class="required">*</span></label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="fromPerson"
+          formControlName="fromPerson"
+          [ngClass]="{
+            'is-invalid':
+              formSuratKeluar.get('fromPerson')?.errors &&
+              formSuratKeluar.get('fromPerson')?.touched
+          }"
+        />
+        <div class="invalid-feedback">Harap isi From</div>
+      </div>
+      <div class="mb-2">
+        <label for="message" class="form-label"
+          >Message<span class="required">*</span></label
+        >
+        <textarea
+          formControlName="message"
+          id="message"
+          cols="30"
+          rows="3"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+              formSuratKeluar.get('message')?.errors &&
+              formSuratKeluar.get('message')?.touched
+          }"
+        ></textarea>
+        <div class="invalid-feedback">Harap isi Message</div>
+      </div>
+      <div class="mt-2 float-end">
+        <button
+          type="button"
+          class="btn btn-sm btn-danger me-2"
+          (click)="save()"
+        >
+          <i class="fas fa-save"></i> Save
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          (click)="modalRef.hide()"
+        >
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #popupDetail>
+  <div class="modal-header">
+    <h1 class="h4 font-weight-normal">Detail Surat</h1>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modalRef.hide()"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-2">
+      <p class="float-end">
+        <b>Created </b>
+        {{ detailSuratKeluar.created | date: "dd/MM/yyyy" }}
+      </p>
+    </div>
+    <div class="mb-2">
+      <p>
+        <b>Title</b>
+        <br />
+        {{ detailSuratKeluar.title }}
+      </p>
+    </div>
+    <div class="mb-2">
+      <p>
+        <b>No Letter</b>
+        <br />
+        {{ detailSuratKeluar.noLetter }}
+      </p>
+    </div>
+    <div class="mb-2">
+      <p>
+        <b>Regarding</b>
+        <br />
+        {{ detailSuratKeluar.regarding }}
+      </p>
+    </div>
+    <div class="mb-2">
+      <p>
+        <b>To</b>
+        <br />
+        {{ detailSuratKeluar.toPerson }}
+      </p>
+    </div>
+    <div class="mb-2">
+      <p>
+        <b>From</b>
+        <br />
+        {{ detailSuratKeluar.fromPerson }}
+      </p>
+    </div>
+    <div class="mb-2">
+      <p>
+        <b>Message</b>
+        <br />
+        {{ detailSuratKeluar.message }}
+      </p>
+    </div>
+  </div>
+</ng-template>
+
+<p-blockUI [blocked]="blocked">
+  <div
+    style="
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+  >
+    <button class="btn btn-success" type="button" disabled>
+      <span
+        class="spinner-grow spinner-grow-sm"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      Loading...
+    </button>
+  </div>
+</p-blockUI>
